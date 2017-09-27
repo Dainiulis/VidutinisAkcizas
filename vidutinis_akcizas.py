@@ -6,6 +6,48 @@ import datetime
 import time
 import calendar
 
+PIRKIMAI = 'Pirkimai'
+
+GAMYBA = 'Gamyba'
+
+VIDUTINIS_AKCIZAS = 'Vidutinis akcizas'
+
+LIKUTIS_DIENOS_PRADZIAI = 'Likutis dienos pradziai'
+
+OPERACIJOS_VISAS = 'Operacijos visas'
+
+KIEKIS_FINAL = 'Kiekis_final'
+
+IMONE = 'Įmonė'
+
+TARIFINE_GRUPE = 'Tarifinė grupė'
+
+FAKTINE_DATA = 'Faktinė data'
+
+SANDELIS = 'Sandėlis'
+
+DAUGIKLIS = 'Daugiklis'
+
+KOEFICIENTAS = 'Koeficientas'
+
+VIENETAS = 'Vienetas'
+
+STIPRUMAS = 'Stiprumas'
+
+TALPA = 'Talpa'
+
+PREKES_NR = 'Prekės Nr.'
+
+TRF_GR_KODAS = 'Tarifinės grupės kodas'
+
+VNT_Y = 'Vienetas_y'
+
+TO_VNT = 'Į vnt.'
+
+VNT_X = 'Vienetas_x'
+
+FROM_VNT = 'Iš vieneto'
+
 filename = 'Akcizas deklaracijai 2016-04.xlsx'
 TALPA_STIPR = 'talpa * stiprumas'
 TALPA = 'Talpa'
@@ -26,51 +68,53 @@ def calculate_final_qty(row):
 
 def add_pirkimai(row):
     if row['Nuoroda'] == 'Pirkimo užsakymas':
-        return row['Kiekis_final']
+        return row[KIEKIS_FINAL]
     else:
         return 0
 
 
 def gamyba_be_suvest(row):
-    if (row['Nuoroda'] == 'Gamyba' or row['Nuoroda'] == 'Gamybos eilutė') and pd.isnull(row['Gamyba']):
-        return row['Kiekis_final']
+    if (row['Nuoroda'] == GAMYBA) and pd.isnull(row[GAMYBA]):
+        return row[KIEKIS_FINAL]
     else:
         return 0
 
 
 def get_final_df():
+    print('Pritraukiami duomenys...')
     ats_op_df = pd.read_excel(filename, sheetname='operacijos')
     atsargos_df = pd.read_excel(filename, sheetname='atsargos')
     sandeliai_df = pd.read_excel(filename, sheetname='sandėliai')
 
     netraukti_vidutiniam_df = pd.read_excel(filename, sheetname='netraukti vidutiniam')
-    netraukti_vidutiniam_df['Gamyba'] = 0
+    netraukti_vidutiniam_df[GAMYBA] = 0
 
     vnt_konv = pd.read_excel(filename, sheetname='vnt konversija')
-    vnt_konv.rename(columns={'Iš vieneto': 'Vienetas_x', 'Į vnt.': 'Vienetas_y'}, inplace=True)
+    vnt_konv.rename(columns={FROM_VNT: VNT_X, TO_VNT: VNT_Y}, inplace=True)
     tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
-    tarif_group_df.rename(columns={'Tarifinės grupės kodas': 'Tarifinė grupė'}, inplace=True)
+    tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
     # main_df.set_index('Prekės Nr.', inplace=True)
-    pritrauktas_df = pd.merge(ats_op_df, atsargos_df[['Prekės Nr.', 'Tarifinė grupė', 'Talpa', 'Stiprumas']],
-                              on='Prekės Nr.')
-    pritrauktas_df = pd.merge(pritrauktas_df, tarif_group_df[['Tarifinė grupė', 'Vienetas']], on='Tarifinė grupė')
-    pritrauktas_df = pd.merge(pritrauktas_df, vnt_konv[['Koeficientas', 'Daugiklis', 'Vienetas_x', 'Vienetas_y']],
-                              on=['Vienetas_x', 'Vienetas_y'], how='left')
-    pritrauktas_df = pd.merge(pritrauktas_df, sandeliai_df[['Sandėlis', 'Įmonė']], on='Sandėlis', how='left')
-    pritrauktas_df['Kiekis_final'] = pritrauktas_df.apply(calculate_final_qty, axis=1)
-    pritrauktas_df['Pirkimai'] = pritrauktas_df.apply(add_pirkimai, axis=1)
+    pritrauktas_df = pd.merge(ats_op_df, atsargos_df[[PREKES_NR, TARIFINE_GRUPE, TALPA, STIPRUMAS]],
+                              on=PREKES_NR)
+    pritrauktas_df = pd.merge(pritrauktas_df, tarif_group_df[[TARIFINE_GRUPE, VIENETAS]], on=TARIFINE_GRUPE)
+    pritrauktas_df = pd.merge(pritrauktas_df, vnt_konv[[KOEFICIENTAS, DAUGIKLIS, VNT_X, VNT_Y]],
+                              on=[VNT_X, VNT_Y], how='left')
+    pritrauktas_df = pd.merge(pritrauktas_df, sandeliai_df[[SANDELIS, IMONE]], on=SANDELIS, how='left')
+    pritrauktas_df[KIEKIS_FINAL] = pritrauktas_df.apply(calculate_final_qty, axis=1)
+    pritrauktas_df[PIRKIMAI] = pritrauktas_df.apply(add_pirkimai, axis=1)
 
-    pritrauktas_df = pd.merge(pritrauktas_df, netraukti_vidutiniam_df[['Gamyba', 'Prekės Nr.']], on='Prekės Nr.',
+    pritrauktas_df = pd.merge(pritrauktas_df, netraukti_vidutiniam_df[[GAMYBA, PREKES_NR]], on=PREKES_NR,
                               how='left')
-    pritrauktas_df['Gamyba'] = pritrauktas_df.apply(gamyba_be_suvest, axis=1)
-
+    pritrauktas_df[GAMYBA] = pritrauktas_df.apply(gamyba_be_suvest, axis=1)
 
     pritrauktas_df.to_excel('tests.xlsx', sheet_name='tests')  #####
 
-    final_df = pritrauktas_df.groupby(['Įmonė', 'Tarifinė grupė', 'Faktinė data'])[
-        ['Kiekis_final', 'Pirkimai', 'Gamyba']].sum()
+    final_df = pritrauktas_df.groupby([IMONE, TARIFINE_GRUPE, FAKTINE_DATA])[
+        [KIEKIS_FINAL, PIRKIMAI, GAMYBA]].sum()
 
     final_df.to_pickle('final_df.pickle')
+
+    print("Duomenys pritraukti\nInicijuojamas vidutinio akcizo skaiciavimas...")
 
     return final_df
 
@@ -79,54 +123,63 @@ def add_likutis_men_pradziai(row):
     if row.name[2] != pd.Timestamp('2016-04-01'):
         likutis_men_pr = 0
     else:
-        likutis_men_pr = likutis_men_pr_df.loc[(likutis_men_pr_df['Sandėlis'] == row.name[0]) & (likutis_men_pr_df['Tarifinė grupė'] == row.name[1])]
+        likutis_men_pr = likutis_men_pr_df.loc[
+            (likutis_men_pr_df['Sandėlis'] == row.name[0]) & (likutis_men_pr_df[TARIFINE_GRUPE] == row.name[1])]
         likutis_men_pr = likutis_men_pr['Kiekis'].values[0]
     return likutis_men_pr
 
 
+start_date = input("Iveskite PRADZIOS data formatu YYYY-MM-DD: ")
+end_date = input("Iveskite PABAIGOS data formatu YYYY-MM-DD: ")
+
+date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+
 start_time = time.time()
 
-# final_df = get_final_df()
+final_df = get_final_df()
 
-final_df = pd.read_pickle('final_df.pickle')
-# likutis_men_pr_df = pd.read_excel(filename, sheetname='Likutis men pradz')
+# final_df = pd.read_pickle('final_df.pickle')
+likutis_men_pr_df = pd.read_excel(filename, sheetname='Likutis men pradz')
 
 # likutis_men_pr_df.to_pickle('likutis_men_pr_df.pickle')
-likutis_men_pr_df = pd.read_pickle('likutis_men_pr_df.pickle')
+# likutis_men_pr_df = pd.read_pickle('likutis_men_pr_df.pickle')
 
-idx = pd.date_range('2016-04-01', '2016-04-30')
 
-writer = pd.ExcelWriter('fails.xlsx', engine='xlsxwriter')
-final_df.to_excel(writer, sheet_name='pirms')
-
+idx = pd.date_range(start_date, end_date)
+tarifai_all = likutis_men_pr_df[TARIFINE_GRUPE].unique()
 final_df = final_df \
-    .unstack(['Įmonė', 'Tarifinė grupė']) \
+    .unstack([IMONE, FAKTINE_DATA]) \
+    .reindex(tarifai_all).fillna(0) \
+    .stack([IMONE, FAKTINE_DATA]) \
+    .unstack([IMONE, TARIFINE_GRUPE]) \
     .reindex(idx).fillna(0) \
-    .stack(['Įmonė', 'Tarifinė grupė']) \
+    .stack([IMONE, TARIFINE_GRUPE]) \
     .swaplevel(0, 2) \
     .swaplevel(0, 1) \
     .groupby(level=[0, 1, 2]).sum()
-final_df.index.set_names('Faktinė data', level=2, inplace=True)
+final_df.index.set_names(FAKTINE_DATA, level=2, inplace=True)
 final_df = pd.DataFrame(final_df)
-final_df['Likutis dienos pradziai'] = final_df.apply(add_likutis_men_pradziai, axis=1)
+final_df.rename(columns={KIEKIS_FINAL: OPERACIJOS_VISAS}, inplace=True)
+final_df[LIKUTIS_DIENOS_PRADZIAI] = final_df.apply(add_likutis_men_pradziai, axis=1)
+final_df[VIDUTINIS_AKCIZAS] = np.nan
 
-# final_df['Faktinė data'] = datetime.datetime.date(final_df['Faktinė data'])
+warehouse_level = final_df.index.levels[0]
+tarif_group_level = final_df.index.levels[1]
+month_days_level = final_df.index.levels[2]
+for warehouse in warehouse_level:
+    print("Skaičiuojamas sandėlis {0}".format(warehouse))
+    for tarif in tarif_group_level:
+        for i, (idx, row) in zip(np.arange(len(final_df.loc[warehouse, tarif].index)),
+                                 final_df.loc[warehouse, tarif].iterrows()):
+            row[VIDUTINIS_AKCIZAS] = row[LIKUTIS_DIENOS_PRADZIAI] + row[GAMYBA] + row[PIRKIMAI]
+            likutis_kitos_dienos_pradziai = row[LIKUTIS_DIENOS_PRADZIAI] + row[OPERACIJOS_VISAS]
+            try:
+                next_date = final_df.loc[warehouse, tarif].iloc[[i + 1]].index[0]
+                final_df.loc[warehouse, tarif, next_date][LIKUTIS_DIENOS_PRADZIAI] = likutis_kitos_dienos_pradziai
+            except Exception as e:
+                pass
 
-# final_df.rename(columns={0 : 'Operaciju kiekis'}, inplace=True)
-
-print(final_df.loc['ALITA', 210, '2016-04-01']) # easy kaip du pirstus apmyzt
-
-# for imone in final_df.index.levels[0]:
-#     for tarifine_gr in final_df[imone].index.levels[0]:
-#         likutis_dien_pr = likutis_men_pr_df.loc[(likutis_men_pr_df['Sandėlis'] == imone) & (likutis_men_pr_df['Tarifinė grupė'] == tarifine_gr)]
-#         likutis_dien_pr = likutis_dien_pr['Kiekis'].values[0]
-#         print(imone, tarifine_gr)
-#         for i in range(len(final_df[imone][tarifine_gr].values)):
-#             # print(i, likutis_men_pr, final_df[imone][tarifine_gr].values[i])
-#             likutis_dien_pr = likutis_dien_pr + final_df[imone][tarifine_gr].values[i]
-#             final_df[imone][tarifine_gr].values[i] = likutis_dien_pr
-#             # print(i, likutis_men_pr, final_df[imone][tarifine_gr].values[i])
-
-final_df.to_excel(writer, sheet_name='trecs')
+writer = pd.ExcelWriter('Vidutinis akcizas ' + str(date.year) + '-' + str(date.month) +'.xlsx', engine='xlsxwriter')
+final_df.to_excel(writer, sheet_name='Vidutinis_akcizas')
 writer.save()
 print(int(time.time() - start_time))
