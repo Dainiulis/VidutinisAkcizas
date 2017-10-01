@@ -7,48 +7,28 @@ import time
 import calendar
 
 PIRKIMAI = 'Pirkimai'
-
 GAMYBA = 'Gamyba'
-
 VIDUTINIS_AKCIZAS = 'Vidutinis akcizas'
-
 LIKUTIS_DIENOS_PRADZIAI = 'Likutis dienos pradziai'
-
 OPERACIJOS_VISAS = 'Operacijos visas'
-
 KIEKIS_FINAL = 'Kiekis_final'
-
 IMONE = 'Įmonė'
-
 TARIFINE_GRUPE = 'Tarifinė grupė'
-
 FAKTINE_DATA = 'Faktinė data'
-
 SANDELIS = 'Sandėlis'
-
 DAUGIKLIS = 'Daugiklis'
-
 KOEFICIENTAS = 'Koeficientas'
-
 VIENETAS = 'Vienetas'
-
 STIPRUMAS = 'Stiprumas'
-
 TALPA = 'Talpa'
-
 PREKES_NR = 'Prekės Nr.'
-
 TRF_GR_KODAS = 'Tarifinės grupės kodas'
-
 VNT_Y = 'Vienetas_y'
-
 TO_VNT = 'Į vnt.'
-
 VNT_X = 'Vienetas_x'
-
 FROM_VNT = 'Iš vieneto'
 
-filename = 'Akcizas deklaracijai 2016-04.xlsx'
+filename = 'Akcizas deklaracijai 2017-08.xlsx'
 TALPA_STIPR = 'talpa * stiprumas'
 TALPA = 'Talpa'
 
@@ -93,13 +73,18 @@ def get_final_df():
     vnt_konv.rename(columns={FROM_VNT: VNT_X, TO_VNT: VNT_Y}, inplace=True)
     tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
     tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
+    print("Viso ats_operacijų: ", len(ats_op_df))
     # main_df.set_index('Prekės Nr.', inplace=True)
     pritrauktas_df = pd.merge(ats_op_df, atsargos_df[[PREKES_NR, TARIFINE_GRUPE, TALPA, STIPRUMAS]],
                               on=PREKES_NR)
+    print("Pritraukta tarifinė grupė, talpa, stiprumas. Eilučių skaičius: ", len(pritrauktas_df))
     pritrauktas_df = pd.merge(pritrauktas_df, tarif_group_df[[TARIFINE_GRUPE, VIENETAS]], on=TARIFINE_GRUPE)
+    print("Pritraukas vienetas: ", len(pritrauktas_df))
     pritrauktas_df = pd.merge(pritrauktas_df, vnt_konv[[KOEFICIENTAS, DAUGIKLIS, VNT_X, VNT_Y]],
                               on=[VNT_X, VNT_Y], how='left')
+    print("Pritrauktas koeficientas, daugiklis, vnt_x, vnt_y : ", len(pritrauktas_df))
     pritrauktas_df = pd.merge(pritrauktas_df, sandeliai_df[[SANDELIS, IMONE]], on=SANDELIS, how='left')
+    print("Pritrauktas sandelis, imone: ", len(pritrauktas_df))
     pritrauktas_df[KIEKIS_FINAL] = pritrauktas_df.apply(calculate_final_qty, axis=1)
     pritrauktas_df[PIRKIMAI] = pritrauktas_df.apply(add_pirkimai, axis=1)
 
@@ -120,7 +105,7 @@ def get_final_df():
 
 
 def add_likutis_men_pradziai(row):
-    if row.name[2] != pd.Timestamp('2016-04-01'):
+    if row.name[2] != pd.Timestamp(start_date):
         likutis_men_pr = 0
     else:
         likutis_men_pr = likutis_men_pr_df.loc[
@@ -131,8 +116,8 @@ def add_likutis_men_pradziai(row):
 
 start_date = input("Iveskite PRADZIOS data formatu YYYY-MM-DD: ")
 end_date = input("Iveskite PABAIGOS data formatu YYYY-MM-DD: ")
-
 date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+writer = pd.ExcelWriter('Vidutinis akcizas ' + str(date.year) + '-' + str(date.month) +'.xlsx', engine='xlsxwriter')
 
 start_time = time.time()
 
@@ -179,7 +164,6 @@ for warehouse in warehouse_level:
             except Exception as e:
                 pass
 
-writer = pd.ExcelWriter('Vidutinis akcizas ' + str(date.year) + '-' + str(date.month) +'.xlsx', engine='xlsxwriter')
 final_df.to_excel(writer, sheet_name='Vidutinis_akcizas')
 writer.save()
 print(int(time.time() - start_time))
