@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8e25f4d9-e1ce-4da1-b2c5-ec3a99adc1a0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Vidutinis akcizas 2017-8.xlsx" afterPath="$PROJECT_DIR$/Vidutinis akcizas 2017-8.xlsx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/gui_tkinter/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/gui_tkinter/main_window.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vidutinis_akcizas.py" afterPath="$PROJECT_DIR$/vidutinis_akcizas.py" />
@@ -16,20 +17,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="vidutinis_akcizas.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vidutinis_akcizas.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
+            <state relative-caret-position="159">
+              <caret line="299" column="40" lean-forward="true" selection-start-line="299" selection-start-column="40" selection-end-line="299" selection-end-column="40" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
-                <element signature="e#1299#1755#0" expanded="false" />
-                <element signature="e#1785#1884#0" expanded="false" />
-                <element signature="e#1918#2033#0" expanded="false" />
-                <element signature="e#2746#5278#0" expanded="false" />
-                <element signature="e#5327#5594#0" expanded="false" />
-                <element signature="e#5636#5963#0" expanded="false" />
-                <element signature="e#6004#7782#0" expanded="false" />
+                <element signature="e#1591#2047#0" expanded="false" />
+                <element signature="e#2077#2176#0" expanded="false" />
+                <element signature="e#2210#2325#0" expanded="false" />
+                <element signature="e#2358#2505#0" expanded="false" />
+                <element signature="e#2548#2668#0" expanded="false" />
+                <element signature="e#2713#2835#0" expanded="false" />
+                <element signature="e#2883#3008#0" expanded="false" />
+                <element signature="e#3047#3152#0" expanded="false" />
+                <element signature="e#3193#5729#0" expanded="false" />
+                <element signature="e#5778#6045#0" expanded="false" />
+                <element signature="e#9821#9853#0" expanded="false" />
+                <element signature="e#11367#11656#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main_window.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gui_tkinter/main_window.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="482">
+              <caret line="52" column="23" lean-forward="false" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -50,6 +68,9 @@
       <find>head()</find>
       <find>nuorod</find>
       <find>'nuoroda</find>
+      <find>print</find>
+      <find>pritrauktas[</find>
+      <find>filename</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -60,13 +81,15 @@
       <list>
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/vidutinis_akcizas.py" />
+        <option value="$PROJECT_DIR$/gui_tkinter/main_window.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="width" value="976" />
-    <option name="height" value="1038" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1048" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -93,11 +116,19 @@
               <item name="VidutinisAkcizas" type="b2602c69:ProjectViewProjectNode" />
               <item name="VidutinisAkcizas" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="VidutinisAkcizas" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VidutinisAkcizas" type="462c0819:PsiDirectoryNode" />
+              <item name="gui_tkinter" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ServiceRobots" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -116,7 +147,24 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.vidutinis_akcizas">
+  <component name="RunManager" selected="Python.main_window">
+    <configuration name="main_window" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gui_tkinter" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="VidutinisAkcizas" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui_tkinter/main_window.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <configuration name="vidutinis_akcizas" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -134,14 +182,22 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Python.vidutinis_akcizas" />
+      <item index="1" class="java.lang.String" itemvalue="Python.main_window" />
+    </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python.vidutinis_akcizas" />
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Python.main_window" />
+        <item index="1" class="java.lang.String" itemvalue="Python.vidutinis_akcizas" />
       </list>
     </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -154,25 +210,25 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23200859" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25159913" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290398" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22014052" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2188889" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290398" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39812645" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39777777" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288889" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -181,12 +237,21 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="25" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="pritrauktas['Vienetas_x']" />
         <watch expression="pritrauktas['Vienetas_y']" />
+        <watch expression="grouped_df.loc[warehouse, tarif, next_date][LIKUTIS_DIENOS_PRADZIAI]" />
+        <watch expression="(idx, row)" />
+        <watch expression="row[VIDUTINIS_AKCIZAS]" />
+        <watch expression="grouped_by_days_df.loc[(warehouse, tarif, next_date), LIKUTIS_DIENOS_PRADZIAI]" />
+        <watch expression="row[LIKUTIS_DIENOS_PRADZIAI]" />
+        <watch expression="row[OPERACIJOS_VISAS]" />
       </configuration>
     </watches-manager>
   </component>
@@ -197,13 +262,28 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui_tkinter/main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="29" column="23" lean-forward="true" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -214,13 +294,28 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui_tkinter/main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -231,13 +326,172 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -255,13 +509,18 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -272,13 +531,18 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -289,13 +553,18 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -306,13 +575,18 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -354,17 +628,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vidutinis_akcizas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="33" column="35" lean-forward="true" selection-start-line="33" selection-start-column="35" selection-end-line="33" selection-end-column="35" />
+        <state relative-caret-position="159">
+          <caret line="299" column="40" lean-forward="true" selection-start-line="299" selection-start-column="40" selection-end-line="299" selection-end-column="40" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1299#1755#0" expanded="false" />
-            <element signature="e#1785#1884#0" expanded="false" />
-            <element signature="e#1918#2033#0" expanded="false" />
-            <element signature="e#2746#5278#0" expanded="false" />
-            <element signature="e#5327#5594#0" expanded="false" />
-            <element signature="e#5636#5963#0" expanded="false" />
-            <element signature="e#6004#7782#0" expanded="false" />
+            <element signature="e#1591#2047#0" expanded="false" />
+            <element signature="e#2077#2176#0" expanded="false" />
+            <element signature="e#2210#2325#0" expanded="false" />
+            <element signature="e#2358#2505#0" expanded="false" />
+            <element signature="e#2548#2668#0" expanded="false" />
+            <element signature="e#2713#2835#0" expanded="false" />
+            <element signature="e#2883#3008#0" expanded="false" />
+            <element signature="e#3047#3152#0" expanded="false" />
+            <element signature="e#3193#5729#0" expanded="false" />
+            <element signature="e#5778#6045#0" expanded="false" />
+            <element signature="e#9821#9853#0" expanded="false" />
+            <element signature="e#11367#11656#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui_tkinter/main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="482">
+          <caret line="52" column="23" lean-forward="false" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>

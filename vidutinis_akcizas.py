@@ -1,12 +1,24 @@
 import pandas as pd
 import numpy as np
+import re
 from openpyxl import Workbook
 from calendar import monthrange
 import datetime
 import time
 import calendar
+import xlsxwriter
+import glob
+from random import randint
 
 # COL NAMES
+SHEET_SUVESTINE = 'Suvestine'
+SHEET_AKCIZAS = 'Vidutinis_akcizas'
+SHEET_NUOSTOLIAI = 'Nuostoliai'
+MENESIO_KIEKIS = 'Menesio kiekis'
+MAX_KIEKIS = 'Max kiekis'
+MENESIO_VID_AKCIZAS = 'Mėnesio vid. akcizas'
+VIDUT_AKCIZAS_SUMA = 'Vidut. Akcizas Suma'
+AKCIZO_TARIFAS = 'Akcizo tarifas'
 PIRKIMAI = 'Pirkimai'
 GAMYBA = 'Gamyba'
 VIDUTINIS_AKCIZAS = 'Vidutinis akcizas'
@@ -43,8 +55,6 @@ GAMYBOS_NUOSTOLIS = 'Gamybos'
 VIRSNORMINIS_NUOSTOLIS = 'Viršnorminis'
 NUOSTOLIO_SANDĖLIS = 'Nuostolio sandėlis'
 
-
-filename = 'Akcizas deklaracijai 2017-08 - test.xlsx'
 TALPA_STIPR = 'talpa * stiprumas'
 TALPA = 'Talpa'
 
@@ -82,20 +92,30 @@ def get_all_damages(row):
     else:
         return 0
 
+
 def get_all_gamybos_nuostolis(row):
     if row[NUOSTOLIO_TIPAS] == GAMYBOS_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
 
+
 def get_all_saugojimo_nuostolis(row):
     if row[NUOSTOLIO_TIPAS] == SAUGOJIMO_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
+
 
 def get_all_virsnorminis_nuostolis(row):
     if row[NUOSTOLIO_TIPAS] == VIRSNORMINIS_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
 
 
-def get_pritrauktas_df():
+def zero_damage_warehouse(row):
+    if row[SANDELIO_TIPAS] == NUOSTOLIO_SANDĖLIS:
+        return 0
+    else:
+        return row[KIEKIS_FINAL]
+
+
+def get_pritrauktas_df(filename):
     print('Pritraukiami duomenys...')
     ats_op_df = pd.read_excel(filename, sheetname='operacijos')
     atsargos_df = pd.read_excel(filename, sheetname='atsargos')
@@ -106,8 +126,8 @@ def get_pritrauktas_df():
 
     vnt_konv = pd.read_excel(filename, sheetname='vnt konversija')
     vnt_konv.rename(columns={FROM_VNT: VNT_X, TO_VNT: VNT_Y}, inplace=True)
-    tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
-    tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
+    # tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
+    # tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
     print("Viso ats_operacijų: ", len(ats_op_df))
 
     pritrauktas_df = pd.merge(ats_op_df, atsargos_df[[PREKES_NR, TARIFINE_GRUPE, TALPA, STIPRUMAS, VIENETAS]],
@@ -156,7 +176,8 @@ def get_final_df_grouped(pritrauktas_df):
 
 
 def add_likutis_men_pradziai(row):
-    if row.name[2] != pd.Timestamp(start_date):
+    # if row.name[2] != pd.Timestamp(start_date):
+    if row.name[2] != start_date:
         likutis_men_pr = 0
     else:
         likutis_men_pr = likutis_men_pr_df.loc[
@@ -165,10 +186,13 @@ def add_likutis_men_pradziai(row):
     return likutis_men_pr
 
 
-def calc_avg_akcizas(grouped_df):
-    idx = pd.date_range(start_date, end_date)
+def get_df_of_calc_avg(grouped_by_days_df):
+    """Suskaičiuoja vidutinį likutį ir kitas mėnesiui reikalingas reikšmes
+
+    :returns (grouped_by_days_df, monthly_report_df)"""
+    idx = pd.date_range(start_date, end_date).date
     tarifai_all = likutis_men_pr_df[TARIFINE_GRUPE].unique()
-    grouped_df = grouped_df \
+    grouped_by_days_df = grouped_by_days_df \
         .unstack([IMONE, FAKTINE_DATA]) \
         .reindex(tarifai_all).fillna(0) \
         .stack([IMONE, FAKTINE_DATA]) \
@@ -178,48 +202,129 @@ def calc_avg_akcizas(grouped_df):
         .swaplevel(0, 2) \
         .swaplevel(0, 1) \
         .groupby(level=[0, 1, 2]).sum()
-    grouped_df.index.set_names(FAKTINE_DATA, level=2, inplace=True)
-    grouped_df = pd.DataFrame(grouped_df)
-    grouped_df.rename(columns={KIEKIS_FINAL: OPERACIJOS_VISAS}, inplace=True)
-    grouped_df[LIKUTIS_DIENOS_PRADZIAI] = grouped_df.apply(add_likutis_men_pradziai, axis=1)
-    grouped_df[VIDUTINIS_AKCIZAS] = np.nan
+    grouped_by_days_df.index.set_names(FAKTINE_DATA, level=2, inplace=True)
+    grouped_by_days_df = pd.DataFrame(grouped_by_days_df)
+    grouped_by_days_df.rename(columns={KIEKIS_FINAL: OPERACIJOS_VISAS}, inplace=True)
+    grouped_by_days_df[LIKUTIS_DIENOS_PRADZIAI] = grouped_by_days_df.apply(add_likutis_men_pradziai, axis=1)
 
-    warehouse_level = grouped_df.index.levels[0]
-    tarif_group_level = grouped_df.index.levels[1]
-    month_days_level = grouped_df.index.levels[2]
+    grouped_by_days_df[VIDUTINIS_AKCIZAS] = np.nan
+    grouped_by_days_df[VIDUT_AKCIZAS_SUMA] = np.nan
+    grouped_by_days_df[MENESIO_KIEKIS] = np.nan
+    grouped_by_days_df[AKCIZO_TARIFAS] = np.nan
+    grouped_by_days_df[MENESIO_VID_AKCIZAS] = np.nan
+    grouped_by_days_df[MAX_KIEKIS] = np.nan
+
+    warehouse_level = grouped_by_days_df.index.levels[0]
+    tarif_group_level = grouped_by_days_df.index.levels[1]
+    month_days_level = grouped_by_days_df.index.levels[2]
+    report_dict = {}
     for warehouse in warehouse_level:
         print("Skaičiuojamas sandėlis {0}".format(warehouse))
         for tarif in tarif_group_level:
-            for i, (idx, row) in zip(np.arange(len(grouped_df.loc[warehouse, tarif].index)),
-                                     grouped_df.loc[warehouse, tarif].iterrows()):
+            for i, (idx, row) in zip(np.arange(len(grouped_by_days_df.loc[warehouse, tarif].index)),
+                                     grouped_by_days_df.loc[warehouse, tarif].iterrows()):
                 row[VIDUTINIS_AKCIZAS] = row[LIKUTIS_DIENOS_PRADZIAI] + row[GAMYBA] + row[PIRKIMAI]
                 likutis_kitos_dienos_pradziai = row[LIKUTIS_DIENOS_PRADZIAI] + row[OPERACIJOS_VISAS]
                 try:
-                    next_date = grouped_df.loc[warehouse, tarif].iloc[[i + 1]].index[0]
-                    grouped_df.loc[warehouse, tarif, next_date][LIKUTIS_DIENOS_PRADZIAI] = likutis_kitos_dienos_pradziai
+                    next_date = grouped_by_days_df.loc[warehouse, tarif].iloc[[i + 1]].index[0]
+                    # grouped_by_days_df.loc[warehouse, tarif, next_date][
+                    #     LIKUTIS_DIENOS_PRADZIAI] = likutis_kitos_dienos_pradziai
+                    grouped_by_days_df.loc[
+                        (warehouse, tarif, next_date), LIKUTIS_DIENOS_PRADZIAI] = likutis_kitos_dienos_pradziai
                 except Exception as e:
                     pass
-    return grouped_df
+
+            try:
+                akcizo_tarif = tarif_group_df.loc[tarif_group_df[TARIFINE_GRUPE] == tarif][AKCIZO_TARIFAS]
+                # first_row = grouped_by_days_df.loc[warehouse, tarif, pd.Timestamp(start_date)]
+                first_row = grouped_by_days_df.loc[warehouse, tarif, start_date]
+                first_row[AKCIZO_TARIFAS] = akcizo_tarif.values[0]
+                first_row[VIDUT_AKCIZAS_SUMA] = grouped_by_days_df.loc[warehouse, tarif][VIDUTINIS_AKCIZAS].sum().round(
+                    2)
+                first_row[MENESIO_KIEKIS] = (first_row[VIDUT_AKCIZAS_SUMA] / last_day).round(2)
+                first_row[MENESIO_VID_AKCIZAS] = (first_row[MENESIO_KIEKIS] * first_row[AKCIZO_TARIFAS]).round(2)
+                first_row[MAX_KIEKIS] = grouped_by_days_df.loc[warehouse, tarif][VIDUTINIS_AKCIZAS].max()
+                # report_list.append([warehouse,
+                #                     tarif,
+                #                     first_row[AKCIZO_TARIFAS],
+                #                     first_row[VIDUT_AKCIZAS_SUMA],
+                #                     first_row[MENESIO_KIEKIS],
+                #                     first_row[MENESIO_VID_AKCIZAS],
+                #                     first_row[MAX_KIEKIS]
+                #                     ])
+
+                report_dict[(warehouse, tarif)] = [first_row[AKCIZO_TARIFAS],
+                                                   first_row[VIDUT_AKCIZAS_SUMA],
+                                                   first_row[MENESIO_KIEKIS],
+                                                   first_row[MENESIO_VID_AKCIZAS],
+                                                   first_row[MAX_KIEKIS]
+                                                   ]
+
+            except Exception as e:
+                # print(e)
+                pass
+    monthly_report_df = pd.DataFrame(report_dict).T
+    monthly_report_df.rename(columns={0: AKCIZO_TARIFAS,
+                                      1: VIDUT_AKCIZAS_SUMA,
+                                      2: MENESIO_KIEKIS,
+                                      3: MENESIO_VID_AKCIZAS,
+                                      4: MAX_KIEKIS}, inplace=True)
+    # monthly_report_df.set_index(IMONE, inplace=True)
+    return (grouped_by_days_df, monthly_report_df)
 
 
-start_date = input("Iveskite PRADZIOS data formatu YYYY-MM-DD: ")
-end_date = input("Iveskite PABAIGOS data formatu YYYY-MM-DD: ")
-date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+def format_excel(writer, data_frames, sheets):
+    def set_col_width_and_autofilter(df, ws):
+        lvl_cnt = len(df.index.levels)
+        ws.set_column(0, lvl_cnt, 15)
+        length_list = [len(x) for x in df.columns]
+        ws.autofilter(0, 0, 0, lvl_cnt + len(length_list) - 1)
+        for i, width in enumerate(length_list):
+            ws.set_column(i + lvl_cnt, i + lvl_cnt, width)
 
-writer = pd.ExcelWriter('Vidutinis akcizas ' + str(date.year) + '-' + str(date.month) + '.xlsx', engine='xlsxwriter')
+    for i, sheet_name in enumerate(sheets):
+        ws = writer.sheets[sheet_name]
+        ws.freeze_panes(1, 0)
+        set_col_width_and_autofilter(data_frames[i], ws)
+
 
 start_time = time.time()
-pritrauktas_df = get_pritrauktas_df()
-dmg_df = pritrauktas_df.groupby([IMONE, TARIFINE_GRUPE])[[NUOSTOLIS_VISAS, NUOSTOLIS_GAMINANT, NUOSTOLIS_SAUGANT, NUOSTOLIS_VIRSNORM]].sum()
-dmg_df.to_excel(writer, sheet_name='Nuostoliai')
-final_df = get_final_df_grouped(pritrauktas_df)
-# final_df = pd.read_pickle('final_df.pickle')
 
-# likutis_men_pr_df.to_pickle('likutis_men_pr_df.pickle')
-# likutis_men_pr_df = pd.read_pickle('likutis_men_pr_df.pickle')
 
-likutis_men_pr_df = pd.read_excel(filename, sheetname='Likutis men pradz')
-final_df = get_final_df_grouped(final_df)
-final_df.to_excel(writer, sheet_name='Vidutinis_akcizas')
-writer.save()
+def run_calculation(filename, save_file_name):
+    global tarif_group_df, last_day, start_date, end_date, likutis_men_pr_df
+    if filename is None:
+        filenames = glob.glob('*.xls*')
+        date_regex = re.compile(r'.*(([0-9]{4})\s?-\s?([0-9]{2})).*', re.DOTALL)
+        matching_filenames = [x for x in filenames if date_regex.match(x)]
+        filename = matching_filenames[0]
+    tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
+    tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
+    pritrauktas_df = get_pritrauktas_df(filename)
+    # pritrauktas_df = pd.read_pickle('pritrauktas_df.pickle')
+    random_time_stamp = pritrauktas_df[FAKTINE_DATA][randint(0, len(pritrauktas_df[FAKTINE_DATA]))]
+    year = random_time_stamp.year
+    month = random_time_stamp.month
+    last_day = monthrange(year, month)[1]
+    start_date = datetime.date(year, month, 1)
+    end_date = datetime.date(year, month, last_day)
+    if save_file_name is None:
+        save_file_name = 'Vidutinis akcizas ' + str(year) + '-' + str(month)
+    writer = pd.ExcelWriter(save_file_name + '.xlsx', engine='xlsxwriter')
+    dmg_df = pritrauktas_df.groupby([IMONE, TARIFINE_GRUPE])[
+        [NUOSTOLIS_VISAS, NUOSTOLIS_GAMINANT, NUOSTOLIS_SAUGANT, NUOSTOLIS_VIRSNORM]].sum()
+    dmg_df.to_excel(writer, sheet_name=SHEET_NUOSTOLIAI)
+    final_df = get_final_df_grouped(pritrauktas_df)
+    likutis_men_pr_df = pd.read_excel(filename, sheetname='Likutis men pradz')
+    final_df_and_report = get_df_of_calc_avg(final_df)
+    final_df_and_report[0].to_excel(writer, sheet_name=SHEET_AKCIZAS)
+    final_df_and_report[1].to_excel(writer, sheet_name=SHEET_SUVESTINE)
+    data_frames = [dmg_df, final_df_and_report[0], final_df_and_report[1]]
+    sheets = [SHEET_NUOSTOLIAI, SHEET_AKCIZAS, SHEET_SUVESTINE]
+    format_excel(writer, data_frames, sheets)
+    writer.save()
+
+
+# run_calculation(None, None)
+
 print(int(time.time() - start_time))
