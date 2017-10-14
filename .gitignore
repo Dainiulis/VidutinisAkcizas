@@ -1,3 +1,7 @@
 *.xlsx
+
 *.xls
-*.csv*.pickle
+
+*.csv
+*.pickle
+.idea
