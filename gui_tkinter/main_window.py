@@ -1,7 +1,12 @@
 import tkinter as tk
+import _tkinter
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from vidutinis_akcizas import run_calculation
 
+import time
+
+import _thread
+
+from vidutinis_akcizas import run_calculation, run_calculation_from_ui
 
 LARGE_FONT = ('Verdana', 12)
 
@@ -34,28 +39,47 @@ class VidutinisAkcizas(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
+
+        self.file_text = tk.StringVar()
+
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Akcizo skaičiavimas", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
+        text = tk.Label(self, textvariable=self.file_text)
+        text.pack()
+
         browse_btn = tk.Button(self, text="Pasirinkti",
                           command=self.browse_func)
         browse_btn.pack()
+
+        self.save_btn = tk.Button(self, text="Išsaugoti",
+                             command=self.save_func)
 
 
 
     def browse_func(self):
         filename = askopenfilename()
         self.save_file_path = filename
-
-        save_btn = tk.Button(self, text="Išsaugoti",
-                             command=self.save_func)
-        save_btn.pack()
+        if filename is not None and filename is not "":
+            self.save_btn.pack()
+            self.file_text.set(filename)
 
     def save_func(self):
         path = asksaveasfilename()
-        run_calculation(self.save_file_path, path)
-        tk._exit(0)
+        path = path.replace(".xlsx", "")
+        print(path)
+        self.file_text.set("Skaičiuojama...")
+        time.sleep(1)
+        if path != None and path != "":
+            try:
+                _thread.start_new_thread(run_calculation_from_ui,
+                                  (self.save_file_path,
+                                        path, self.file_text, ))
+                # run_calculation(self.save_file_path, path)
+                # tk._exit(0)
+            except Exception as e:
+                self.file_text.set(e)
 
 app = VidutinisAkcizas()
 app.mainloop()

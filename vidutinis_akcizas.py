@@ -1,16 +1,22 @@
 import pandas as pd
 import numpy as np
 import re
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from calendar import monthrange
 import datetime
 import time
 import calendar
 import xlsxwriter
 import glob
+import tkinter as tk
 from random import randint
 
 # COL NAMES
+from openpyxl.utils import get_column_letter
+
+SHEET_LIKUTIS_MEN_PRADZ = 'Likutis men pradz'
+
+SHEET_PRITRAUKTI_DUOMENYS = "Pritraukti duomenys"
 SHEET_SUVESTINE = 'Suvestine'
 SHEET_AKCIZAS = 'Vidutinis_akcizas'
 SHEET_NUOSTOLIAI = 'Nuostoliai'
@@ -124,14 +130,21 @@ def get_pritrauktas_df(filename):
     netraukti_vidutiniam_df = pd.read_excel(filename, sheetname='netraukti vidutiniam')
     netraukti_vidutiniam_df[GAMYBA] = 0
 
+    atsargos_df.rename(columns={"KS vienetas" : VIENETAS}, inplace=True)
+    netraukti_vidutiniam_df.rename(columns={"KS vienetas" : VIENETAS}, inplace=True)
+
     vnt_konv = pd.read_excel(filename, sheetname='vnt konversija')
     vnt_konv.rename(columns={FROM_VNT: VNT_X, TO_VNT: VNT_Y}, inplace=True)
     # tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
     # tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
     print("Viso ats_operacijų: ", len(ats_op_df))
 
+
+
     pritrauktas_df = pd.merge(ats_op_df, atsargos_df[[PREKES_NR, TARIFINE_GRUPE, TALPA, STIPRUMAS, VIENETAS]],
                               on=PREKES_NR)
+
+    print(pritrauktas_df.columns)
 
     print("Pritraukta tarifinė grupė, talpa, stiprumas, vienetas. Eilučių skaičius: ", len(pritrauktas_df))
     pritrauktas_df = pd.merge(pritrauktas_df, tarif_group_df[[TARIFINE_GRUPE, VIENETAS]], on=TARIFINE_GRUPE)
@@ -158,8 +171,6 @@ def get_pritrauktas_df(filename):
     pritrauktas_df[NUOSTOLIS_VIRSNORM] = pritrauktas_df.apply(get_all_virsnorminis_nuostolis, axis=1)
 
     pritrauktas_df.to_pickle('pritrauktas_df.pickle')
-
-    pritrauktas_df.to_excel('tests.xlsx', sheet_name='tests')  #####
 
     return pritrauktas_df
 
@@ -284,22 +295,47 @@ def format_excel(writer, data_frames, sheets):
 
     for i, sheet_name in enumerate(sheets):
         ws = writer.sheets[sheet_name]
+        for col in ws.columns:
+            print(col)
         ws.freeze_panes(1, 0)
         set_col_width_and_autofilter(data_frames[i], ws)
 
+def format_all_sheets(writer):
+    for sheet_name in writer.sheets:
+        sheet = writer.sheets[sheet_name]
+        max_col = sheet.max_column
+        max_row = sheet.max_row
+        cell_array = "A1:" \
+                     + get_column_letter(max_col) \
+                     + str(max_row)
+        sheet.auto_filter.ref = cell_array
+        sheet.freeze_panes = sheet['A2']
+        for i in range(1, max_col + 1):
+            try:
+                width = len(sheet.cell(row=1, column=i).value)
+                sheet.column_dimensions[get_column_letter(i)].width = width * 1.1
+            except TypeError:
+                pass
 
 start_time = time.time()
 
+def run_calculation_from_ui(filename, save_file_name, update_text : tk.StringVar):
+    try:
+        run_calculation(filename, save_file_name, update_text)
+    except Exception as e:
+        update_text.set(e)
 
-def run_calculation(filename, save_file_name):
+
+def run_calculation(filename, save_file_name, update_text : tk.StringVar):
     global tarif_group_df, last_day, start_date, end_date, likutis_men_pr_df
-    if filename is None:
-        filenames = glob.glob('*.xls*')
-        date_regex = re.compile(r'.*(([0-9]{4})\s?-\s?([0-9]{2})).*', re.DOTALL)
-        matching_filenames = [x for x in filenames if date_regex.match(x)]
-        filename = matching_filenames[0]
+    # if filename is None:
+    #     filenames = glob.glob('*.xls*')
+    #     date_regex = re.compile(r'.*(([0-9]{4})\s?-\s?([0-9]{2})).*', re.DOTALL)
+    #     matching_filenames = [x for x in filenames if date_regex.match(x)]
+    #     filename = matching_filenames[0]
     tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
     tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
+    update_text.set("Pritraukiami duomenys...")
     pritrauktas_df = get_pritrauktas_df(filename)
     # pritrauktas_df = pd.read_pickle('pritrauktas_df.pickle')
     random_time_stamp = pritrauktas_df[FAKTINE_DATA][randint(0, len(pritrauktas_df[FAKTINE_DATA]))]
@@ -310,19 +346,27 @@ def run_calculation(filename, save_file_name):
     end_date = datetime.date(year, month, last_day)
     if save_file_name is None:
         save_file_name = 'Vidutinis akcizas ' + str(year) + '-' + str(month)
-    writer = pd.ExcelWriter(save_file_name + '.xlsx', engine='xlsxwriter')
+
+    # writer = pd.ExcelWriter(save_file_name + '.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(save_file_name + ".xlsx", engine='openpyxl')
+    update_text.set("Grupuojama...")
     dmg_df = pritrauktas_df.groupby([IMONE, TARIFINE_GRUPE])[
         [NUOSTOLIS_VISAS, NUOSTOLIS_GAMINANT, NUOSTOLIS_SAUGANT, NUOSTOLIS_VIRSNORM]].sum()
     dmg_df.to_excel(writer, sheet_name=SHEET_NUOSTOLIAI)
     final_df = get_final_df_grouped(pritrauktas_df)
-    likutis_men_pr_df = pd.read_excel(filename, sheetname='Likutis men pradz')
+    likutis_men_pr_df = pd.read_excel(filename, sheetname=SHEET_LIKUTIS_MEN_PRADZ)
+    update_text.set("Skaičiuojamas vidutinis akcizas...")
     final_df_and_report = get_df_of_calc_avg(final_df)
+    update_text.set("Saugojama...")
     final_df_and_report[0].to_excel(writer, sheet_name=SHEET_AKCIZAS)
     final_df_and_report[1].to_excel(writer, sheet_name=SHEET_SUVESTINE)
-    data_frames = [dmg_df, final_df_and_report[0], final_df_and_report[1]]
-    sheets = [SHEET_NUOSTOLIAI, SHEET_AKCIZAS, SHEET_SUVESTINE]
-    format_excel(writer, data_frames, sheets)
+    pritrauktas_df.to_excel(writer, sheet_name=SHEET_PRITRAUKTI_DUOMENYS)
+    # data_frames = [dmg_df, final_df_and_report[0], final_df_and_report[1]]
+    # sheets = [SHEET_NUOSTOLIAI, SHEET_AKCIZAS, SHEET_SUVESTINE]
+    # format_excel(writer, data_frames, sheets)
+    format_all_sheets(writer)
     writer.save()
+    update_text.set("Baigta")
 
 
 # run_calculation(None, None)
