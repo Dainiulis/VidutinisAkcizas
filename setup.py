@@ -20,7 +20,7 @@ options = {
     'build_exe': {
         'packages': packages,
         "include_files": include_files
-    },
+        },
 
 }
 

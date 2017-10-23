@@ -14,8 +14,22 @@ from random import randint
 # COL NAMES
 from openpyxl.utils import get_column_letter
 
-SHEET_LIKUTIS_MEN_PRADZ = 'Likutis men pradz'
+LIKUTIS_MEN_PRADZ = 'Likutis men pradz'
 
+KIEKIS = 'Kiekis'
+
+AKCIZO_NUORODA = 'Akcizo nuoroda'
+
+KODAS = "Kodas"
+
+RINKA = "Rinka"
+
+FIN_DATA = "Fin. data"
+
+SANDELIS_2 = "Sandėlis 2"
+SHEET_LIKUTIS_MEN_PRADZ = 'Likutis men pradz'
+I_IS = "Į/Iš"
+PARTIJOS_ID = "Partijos Id"
 SHEET_PRITRAUKTI_DUOMENYS = "Pritraukti duomenys"
 SHEET_SUVESTINE = 'Suvestine'
 SHEET_AKCIZAS = 'Vidutinis_akcizas'
@@ -54,22 +68,24 @@ NUOSTOLIS_VISAS = 'Nuostolis visas'
 NUOSTOLIS_SAUGANT = 'Nuostolis saugant'
 NUOSTOLIS_GAMINANT = 'Nuostolis gaminant'
 NUOSTOLIS_VIRSNORM = 'Virsnorm.'
+TALPA = 'Talpa'
+SANDELIO_TIPAS_2 = SANDELIO_TIPAS + " 2"
 
 # OTHER
-SAUGOJIMO_NUOSTOLIS = 'Saugojimo'
-GAMYBOS_NUOSTOLIS = 'Gamybos'
-VIRSNORMINIS_NUOSTOLIS = 'Viršnorminis'
-NUOSTOLIO_SANDĖLIS = 'Nuostolio sandėlis'
-
-TALPA_STIPR = 'talpa * stiprumas'
-TALPA = 'Talpa'
+saugojimo_nuostolis = 'Saugojimo'
+gamybos_nuostolis = 'Gamybos'
+virsnorminis_nuostolis = 'Viršnorminis'
+nuostolio_sandėlis = 'Nuostolio sandėlis'
+talpa_stipr = 'talpa * stiprumas'
+gavimas = "Gavimas"
+isdavimas = "Išdavimas"
 
 
 def calculate_final_qty(row):
     if row['Vienetas_x'] == row['Vienetas_y']:
         return row['Kiekis']
     else:
-        if row['Daugiklis'].strip().lower() == TALPA_STIPR.strip().lower():
+        if row['Daugiklis'].strip().lower() == talpa_stipr.strip().lower():
             return row['Kiekis'] * row['Talpa'] * row['Stiprumas'] / \
                    row['Koeficientas']
         elif row['Daugiklis'].strip().lower() == TALPA.strip().lower():
@@ -93,53 +109,54 @@ def gamyba_be_suvest(row):
 
 
 def get_all_damages(row):
-    if row[SANDELIO_TIPAS] == NUOSTOLIO_SANDĖLIS and row[NUORODA] == "Pardavimo užsakymas":
+    if row[SANDELIO_TIPAS] == nuostolio_sandėlis and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
     else:
         return 0
 
 
 def get_all_gamybos_nuostolis(row):
-    if row[NUOSTOLIO_TIPAS] == GAMYBOS_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
+    if row[NUOSTOLIO_TIPAS] == gamybos_nuostolis and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
 
 
 def get_all_saugojimo_nuostolis(row):
-    if row[NUOSTOLIO_TIPAS] == SAUGOJIMO_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
+    if row[NUOSTOLIO_TIPAS] == saugojimo_nuostolis and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
 
 
 def get_all_virsnorminis_nuostolis(row):
-    if row[NUOSTOLIO_TIPAS] == VIRSNORMINIS_NUOSTOLIS and row[NUORODA] == "Pardavimo užsakymas":
+    if row[NUOSTOLIO_TIPAS] == virsnorminis_nuostolis and row[NUORODA] == "Pardavimo užsakymas":
         return row[KIEKIS_FINAL]
 
 
 def zero_damage_warehouse(row):
-    if row[SANDELIO_TIPAS] == NUOSTOLIO_SANDĖLIS:
+    if row[SANDELIO_TIPAS] == nuostolio_sandėlis:
         return 0
     else:
         return row[KIEKIS_FINAL]
 
 
 def get_pritrauktas_df(filename):
+    global pritrauktas_df
     print('Pritraukiami duomenys...')
     ats_op_df = pd.read_excel(filename, sheetname='operacijos')
     atsargos_df = pd.read_excel(filename, sheetname='atsargos')
     sandeliai_df = pd.read_excel(filename, sheetname='sandėliai')
+    akcizo_operacijos_df = pd.read_excel(filename, sheetname='akcizo operacijos')
+    likutis_men_pr_df = pd.read_excel(filename, sheetname=LIKUTIS_MEN_PRADZ)
 
     netraukti_vidutiniam_df = pd.read_excel(filename, sheetname='netraukti vidutiniam')
     netraukti_vidutiniam_df[GAMYBA] = 0
 
-    atsargos_df.rename(columns={"KS vienetas" : VIENETAS}, inplace=True)
-    netraukti_vidutiniam_df.rename(columns={"KS vienetas" : VIENETAS}, inplace=True)
+    atsargos_df.rename(columns={"KS vienetas": VIENETAS}, inplace=True)
+    netraukti_vidutiniam_df.rename(columns={"KS vienetas": VIENETAS}, inplace=True)
 
     vnt_konv = pd.read_excel(filename, sheetname='vnt konversija')
     vnt_konv.rename(columns={FROM_VNT: VNT_X, TO_VNT: VNT_Y}, inplace=True)
     # tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
     # tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
     print("Viso ats_operacijų: ", len(ats_op_df))
-
-
 
     pritrauktas_df = pd.merge(ats_op_df, atsargos_df[[PREKES_NR, TARIFINE_GRUPE, TALPA, STIPRUMAS, VIENETAS]],
                               on=PREKES_NR)
@@ -169,6 +186,21 @@ def get_pritrauktas_df(filename):
     pritrauktas_df[NUOSTOLIS_GAMINANT] = pritrauktas_df.apply(get_all_gamybos_nuostolis, axis=1)
     pritrauktas_df[NUOSTOLIS_SAUGANT] = pritrauktas_df.apply(get_all_saugojimo_nuostolis, axis=1)
     pritrauktas_df[NUOSTOLIS_VIRSNORM] = pritrauktas_df.apply(get_all_virsnorminis_nuostolis, axis=1)
+    pritrauktas_df[SANDELIS_2] = pritrauktas_df.apply(get_sandelis2, axis=1)
+    sandeliai_df.rename(
+        columns={SANDELIS: SANDELIS_2,
+                 SANDELIO_TIPAS: SANDELIO_TIPAS_2},
+        inplace=True)
+    pritrauktas_df = pd.merge(pritrauktas_df, sandeliai_df[[SANDELIS_2, SANDELIO_TIPAS_2]], on=SANDELIS_2,
+                              how='left')
+    pritrauktas_df = pd.merge(pritrauktas_df, akcizo_operacijos_df,
+                              on=[SANDELIO_TIPAS, NUORODA, I_IS, SANDELIO_TIPAS_2],
+                              how='left')
+    pritrauktas_df[RINKA] = pritrauktas_df.apply(get_rinka, axis=1)
+
+    likutis_men_pr_df.rename(columns={KIEKIS: LIKUTIS_MEN_PRADZ, SANDELIS: IMONE}, inplace=True)
+    pritrauktas_df = pd.merge(pritrauktas_df, likutis_men_pr_df, on=[IMONE, TARIFINE_GRUPE], how='left')
+    pritrauktas_df[ISLAIDU_CENTRAS] = pritrauktas_df[ISLAIDU_CENTRAS].astype(str)
 
     pritrauktas_df.to_pickle('pritrauktas_df.pickle')
 
@@ -195,6 +227,23 @@ def add_likutis_men_pradziai(row):
             (likutis_men_pr_df['Sandėlis'] == row.name[0]) & (likutis_men_pr_df[TARIFINE_GRUPE] == row.name[1])]
         likutis_men_pr = likutis_men_pr['Kiekis'].values[0]
     return likutis_men_pr
+
+
+def get_sandelis2(row):
+    if row[NUORODA] == "Perkelti":
+        if row[I_IS] == isdavimas:
+            ig = gavimas
+        else:
+            ig = isdavimas
+        x = pritrauktas_df.loc[
+            (pritrauktas_df[I_IS] == ig) &
+            (pritrauktas_df[PARTIJOS_ID] == row[PARTIJOS_ID])].index[0]
+        try:
+            return pritrauktas_df.iloc[x][SANDELIS]
+        except Exception as e:
+            return str(e)
+    else:
+        return ""
 
 
 def get_df_of_calc_avg(grouped_by_days_df):
@@ -300,6 +349,7 @@ def format_excel(writer, data_frames, sheets):
         ws.freeze_panes(1, 0)
         set_col_width_and_autofilter(data_frames[i], ws)
 
+
 def format_all_sheets(writer):
     for sheet_name in writer.sheets:
         sheet = writer.sheets[sheet_name]
@@ -317,27 +367,75 @@ def format_all_sheets(writer):
             except TypeError:
                 pass
 
+
 start_time = time.time()
 
-def run_calculation_from_ui(filename, save_file_name, update_text : tk.StringVar):
+
+def run_calculation_from_ui(filename, save_file_name, update_text: tk.StringVar):
     try:
         run_calculation(filename, save_file_name, update_text)
     except Exception as e:
         update_text.set(e)
 
 
-def run_calculation(filename, save_file_name, update_text : tk.StringVar):
+def update_text(text, update_text: tk.StringVar):
+    if update_text is not None:
+        update_text.set(text)
+
+
+def get_rinka(row):
+    try:
+        return row[KODAS][0]
+    except Exception:
+        return ""
+
+
+def pivot_frames(pritrauktas_df, likutis_men_pr):
+    pivot_df = pd.pivot_table(pritrauktas_df, index=[IMONE, TARIFINE_GRUPE, LIKUTIS_MEN_PRADZ],
+                              columns=[AKCIZO_NUORODA, ISLAIDU_CENTRAS], values=KIEKIS_FINAL, aggfunc=np.sum)
+    pivot_df_1 = pd.pivot_table(pritrauktas_df, index=[IMONE, TARIFINE_GRUPE, LIKUTIS_MEN_PRADZ],
+                                columns=[AKCIZO_NUORODA], values=KIEKIS_FINAL, aggfunc=np.sum)
+    pivot_df_2 = pd.pivot_table(pritrauktas_df, index=[IMONE, TARIFINE_GRUPE, LIKUTIS_MEN_PRADZ],
+                                columns=[AKCIZO_NUORODA, RINKA], values=KIEKIS_FINAL, aggfunc=np.sum)
+    df = pd.concat([pivot_df[[GAMYBA]], pivot_df_1.loc[:, : "Nuostolis-pilstymo"],
+                    pivot_df_1.loc[:, "Perkelti iš AAPS": "Perkelti į AAPS"],
+                    pivot_df[['Pardavimo užsakymas']], pivot_df_1[['Pardavimo užsakymas']],
+                    pivot_df_2[['Pirkimo užsakymas']], pivot_df_1[['Pirkimo užsakymas']]], axis=1)
+    df['TOTAL'] = np.nan
+    for i, row in pivot_df_1.iterrows():
+        df.loc[i, 'TOTAL'] = round(i[2] + row.sum(), 2)
+    df = df.round(2)
+
+    # print(pivot_df_1.loc[:, : "Nuostolis-pilstymo"].columns)
+    # writer = pd.ExcelWriter('test.xlsx', engine='openpyxl')
+    # pivot_df[[GAMYBA]].to_excel(writer, "1")
+    # pivot_df_1.to_excel(writer, "2")
+    # pivot_df_2[['Pirkimo užsakymas', 'Pardavimo užsakymas']].to_excel(writer, "3")
+    #
+    # pritrauktas_df.to_excel(writer, "pritraukti")
+    # df.to_excel(writer, '4')
+    #
+    # writer.save()
+
+    return df
+
+
+def run_calculation(filename, save_file_name, message):
     global tarif_group_df, last_day, start_date, end_date, likutis_men_pr_df
+
     # if filename is None:
     #     filenames = glob.glob('*.xls*')
     #     date_regex = re.compile(r'.*(([0-9]{4})\s?-\s?([0-9]{2})).*', re.DOTALL)
     #     matching_filenames = [x for x in filenames if date_regex.match(x)]
     #     filename = matching_filenames[0]
+
     tarif_group_df = pd.read_excel(filename, sheetname='tarifinės grupės')
     tarif_group_df.rename(columns={TRF_GR_KODAS: TARIFINE_GRUPE}, inplace=True)
-    update_text.set("Pritraukiami duomenys...")
-    pritrauktas_df = get_pritrauktas_df(filename)
+    update_text("Pritraukiami duomenys...", message)
+
     # pritrauktas_df = pd.read_pickle('pritrauktas_df.pickle')
+    pritrauktas_df = get_pritrauktas_df(filename)
+
     random_time_stamp = pritrauktas_df[FAKTINE_DATA][randint(0, len(pritrauktas_df[FAKTINE_DATA]))]
     year = random_time_stamp.year
     month = random_time_stamp.month
@@ -349,26 +447,37 @@ def run_calculation(filename, save_file_name, update_text : tk.StringVar):
 
     # writer = pd.ExcelWriter(save_file_name + '.xlsx', engine='xlsxwriter')
     writer = pd.ExcelWriter(save_file_name + ".xlsx", engine='openpyxl')
-    update_text.set("Grupuojama...")
+    update_text("Grupuojama...", message)
     dmg_df = pritrauktas_df.groupby([IMONE, TARIFINE_GRUPE])[
         [NUOSTOLIS_VISAS, NUOSTOLIS_GAMINANT, NUOSTOLIS_SAUGANT, NUOSTOLIS_VIRSNORM]].sum()
     dmg_df.to_excel(writer, sheet_name=SHEET_NUOSTOLIAI)
     final_df = get_final_df_grouped(pritrauktas_df)
     likutis_men_pr_df = pd.read_excel(filename, sheetname=SHEET_LIKUTIS_MEN_PRADZ)
-    update_text.set("Skaičiuojamas vidutinis akcizas...")
+    update_text("Skaičiuojamas vidutinis akcizas...", message)
     final_df_and_report = get_df_of_calc_avg(final_df)
-    update_text.set("Saugojama...")
+
+    pivot_df = pivot_frames(pritrauktas_df, likutis_men_pr_df)
+
+    update_text("Saugojama...", message)
     final_df_and_report[0].to_excel(writer, sheet_name=SHEET_AKCIZAS)
     final_df_and_report[1].to_excel(writer, sheet_name=SHEET_SUVESTINE)
+
+    pritrauktas_df[FAKTINE_DATA] = pritrauktas_df[FAKTINE_DATA].dt.date
+    pritrauktas_df[FIN_DATA] = pritrauktas_df[FIN_DATA].dt.date
     pritrauktas_df.to_excel(writer, sheet_name=SHEET_PRITRAUKTI_DUOMENYS)
+    pivot_df.to_excel(writer, sheet_name="Akcizo operacijos")
+
     # data_frames = [dmg_df, final_df_and_report[0], final_df_and_report[1]]
     # sheets = [SHEET_NUOSTOLIAI, SHEET_AKCIZAS, SHEET_SUVESTINE]
     # format_excel(writer, data_frames, sheets)
+
     format_all_sheets(writer)
     writer.save()
-    update_text.set("Baigta")
+    update_text("Baigta", message)
 
 
-# run_calculation(None, None)
+run_calculation("akcz09v3.xlsx", "ttt", None)
+# pritrauktas_df = pd.read_pickle('pritrauktas_df.pickle')
+# likutis_men_pr = pd.read_excel('akcz09v3.xlsx', sheetname=LIKUTIS_MEN_PRADZ)
 
 print(int(time.time() - start_time))
