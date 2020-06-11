@@ -6,6 +6,8 @@ import time
 
 import _thread
 
+import os
+
 from vidutinis_akcizas import run_calculation, run_calculation_from_ui
 
 LARGE_FONT = ('Verdana', 12)
@@ -47,11 +49,11 @@ class StartPage(tk.Frame):
         label.pack(pady=10, padx=10)
 
         text = tk.Label(self, textvariable=self.file_text)
-        text.pack()
+        text.pack(pady=5, padx=5)
 
         browse_btn = tk.Button(self, text="Pasirinkti",
                           command=self.browse_func)
-        browse_btn.pack()
+        browse_btn.pack(pady=5, padx=5)
 
         self.save_btn = tk.Button(self, text="Išsaugoti",
                              command=self.save_func)
@@ -62,13 +64,12 @@ class StartPage(tk.Frame):
         filename = askopenfilename()
         self.save_file_path = filename
         if filename is not None and filename is not "":
-            self.save_btn.pack()
+            self.save_btn.pack(pady=5, padx=5)
             self.file_text.set(filename)
 
     def save_func(self):
         path = asksaveasfilename()
-        path = path.replace(".xlsx", "")
-        print(path)
+        path = os.path.splitext(path)[0]
         self.file_text.set("Skaičiuojama...")
         time.sleep(1)
         if path != None and path != "":
